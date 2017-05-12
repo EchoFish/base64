@@ -66,14 +66,30 @@
 	BASE64_ENC_FUNCTION(arch);	\
 	BASE64_DEC_FUNCTION(arch);	\
 
+#if HAVE_AVX2
 BASE64_CODEC_FUNCS(avx2)
+#endif
+#if HAVE_NEON32
 BASE64_CODEC_FUNCS(neon32)
+#endif
+#if HAVE_NEON64
 BASE64_CODEC_FUNCS(neon64)
+#endif
+
 BASE64_CODEC_FUNCS(plain)
+
+#if HAVE_SSE3
 BASE64_CODEC_FUNCS(ssse3)
+#endif
+#if HAVE_SSE41
 BASE64_CODEC_FUNCS(sse41)
+#endif
+#if HAVE_SSE42
 BASE64_CODEC_FUNCS(sse42)
+#endif
+#if HAVE_AVX
 BASE64_CODEC_FUNCS(avx)
+#endif
 
 static bool
 codec_choose_forced (struct codec *codec, int flags)
@@ -85,46 +101,62 @@ codec_choose_forced (struct codec *codec, int flags)
 	if (!(flags & 0xFF)) {
 		return false;
 	}
+#if HAVE_AVX2
 	if (flags & BASE64_FORCE_AVX2) {
 		codec->enc = base64_stream_encode_avx2;
 		codec->dec = base64_stream_decode_avx2;
 		return true;
 	}
+#endif
+#if HAVE_NEON32
 	if (flags & BASE64_FORCE_NEON32) {
 		codec->enc = base64_stream_encode_neon32;
 		codec->dec = base64_stream_decode_neon32;
 		return true;
 	}
+#endif
+#if HAVE_NEON64
 	if (flags & BASE64_FORCE_NEON64) {
 		codec->enc = base64_stream_encode_neon64;
 		codec->dec = base64_stream_decode_neon64;
 		return true;
 	}
+#endif
+
 	if (flags & BASE64_FORCE_PLAIN) {
 		codec->enc = base64_stream_encode_plain;
 		codec->dec = base64_stream_decode_plain;
 		return true;
 	}
+
+#if HAVE_SSSE3
 	if (flags & BASE64_FORCE_SSSE3) {
 		codec->enc = base64_stream_encode_ssse3;
 		codec->dec = base64_stream_decode_ssse3;
 		return true;
 	}
+#endif
+#if HAVE_SSE41
 	if (flags & BASE64_FORCE_SSE41) {
 		codec->enc = base64_stream_encode_sse41;
 		codec->dec = base64_stream_decode_sse41;
 		return true;
 	}
+#endif
+#if HAVE_SSE42
 	if (flags & BASE64_FORCE_SSE42) {
 		codec->enc = base64_stream_encode_sse42;
 		codec->dec = base64_stream_decode_sse42;
 		return true;
 	}
+#endif
+#if HAVE_AVX
 	if (flags & BASE64_FORCE_AVX) {
 		codec->enc = base64_stream_encode_avx;
 		codec->dec = base64_stream_decode_avx;
 		return true;
 	}
+#endif
 	return false;
 }
 
