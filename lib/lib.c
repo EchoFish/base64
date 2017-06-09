@@ -47,7 +47,7 @@ base64_table_dec[] =
 };
 
 void
-base64_stream_encode_init (struct base64_state *state, int flags)
+trk_base64_stream_encode_init (struct base64_state *state, int flags)
 {
 	// If any of the codec flags are set, redo choice:
 	if (codec.enc == NULL || flags & 0xFF) {
@@ -60,7 +60,7 @@ base64_stream_encode_init (struct base64_state *state, int flags)
 }
 
 void
-base64_stream_encode
+trk_base64_stream_encode
 	( struct base64_state	*state
 	, const char		*src
 	, size_t		 srclen
@@ -72,7 +72,7 @@ base64_stream_encode
 }
 
 void
-base64_stream_encode_final
+trk_base64_stream_encode_final
 	( struct base64_state	*state
 	, char			*out
 	, size_t		*outlen
@@ -97,7 +97,7 @@ base64_stream_encode_final
 }
 
 void
-base64_stream_decode_init (struct base64_state *state, int flags)
+trk_base64_stream_decode_init (struct base64_state *state, int flags)
 {
 	// If any of the codec flags are set, redo choice:
 	if (codec.dec == NULL || flags & 0xFF) {
@@ -110,7 +110,7 @@ base64_stream_decode_init (struct base64_state *state, int flags)
 }
 
 int
-base64_stream_decode
+trk_base64_stream_decode
 	( struct base64_state	*state
 	, const char		*src
 	, size_t		 srclen
@@ -152,13 +152,13 @@ trk_base64_encode
 	#endif
 
 	// Init the stream reader:
-	base64_stream_encode_init(&state, flags);
+	trk_base64_stream_encode_init(&state, flags);
 
 	// Feed the whole string to the stream reader:
-	base64_stream_encode(&state, src, srclen, out, &s);
+	trk_base64_stream_encode(&state, src, srclen, out, &s);
 
 	// Finalize the stream by writing trailer if any:
-	base64_stream_encode_final(&state, out + s, &t);
+	trk_base64_stream_encode_final(&state, out + s, &t);
 
 	// Final output length is stream length plus tail:
 	*outlen = s + t;
@@ -183,10 +183,10 @@ trk_base64_decode
 	#endif
 
 	// Init the stream reader:
-	base64_stream_decode_init(&state, flags);
+	trk_base64_stream_decode_init(&state, flags);
 
 	// Feed the whole string to the stream reader:
-	ret = base64_stream_decode(&state, src, srclen, out, outlen);
+	ret = trk_base64_stream_decode(&state, src, srclen, out, outlen);
 
 	// If when decoding a whole block, we're still waiting for input then fail:
 	if (ret && (state.bytes == 0)) {

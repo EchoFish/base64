@@ -103,57 +103,57 @@ codec_choose_forced (struct codec *codec, int flags)
 	}
 #if HAVE_AVX2
 	if (flags & BASE64_FORCE_AVX2) {
-		codec->enc = base64_stream_encode_avx2;
-		codec->dec = base64_stream_decode_avx2;
+		codec->enc = trk_base64_stream_encode_avx2;
+		codec->dec = trk_base64_stream_decode_avx2;
 		return true;
 	}
 #endif
 #if HAVE_NEON32
 	if (flags & BASE64_FORCE_NEON32) {
-		codec->enc = base64_stream_encode_neon32;
-		codec->dec = base64_stream_decode_neon32;
+		codec->enc = trk_base64_stream_encode_neon32;
+		codec->dec = trk_base64_stream_decode_neon32;
 		return true;
 	}
 #endif
 #if HAVE_NEON64
 	if (flags & BASE64_FORCE_NEON64) {
-		codec->enc = base64_stream_encode_neon64;
-		codec->dec = base64_stream_decode_neon64;
+		codec->enc = trk_base64_stream_encode_neon64;
+		codec->dec = trk_base64_stream_decode_neon64;
 		return true;
 	}
 #endif
 
 	if (flags & BASE64_FORCE_PLAIN) {
-		codec->enc = base64_stream_encode_plain;
-		codec->dec = base64_stream_decode_plain;
+		codec->enc = trk_base64_stream_encode_plain;
+		codec->dec = trk_base64_stream_decode_plain;
 		return true;
 	}
 
 #if HAVE_SSSE3
 	if (flags & BASE64_FORCE_SSSE3) {
-		codec->enc = base64_stream_encode_ssse3;
-		codec->dec = base64_stream_decode_ssse3;
+		codec->enc = trk_base64_stream_encode_ssse3;
+		codec->dec = trk_base64_stream_decode_ssse3;
 		return true;
 	}
 #endif
 #if HAVE_SSE41
 	if (flags & BASE64_FORCE_SSE41) {
-		codec->enc = base64_stream_encode_sse41;
-		codec->dec = base64_stream_decode_sse41;
+		codec->enc = trk_base64_stream_encode_sse41;
+		codec->dec = trk_base64_stream_decode_sse41;
 		return true;
 	}
 #endif
 #if HAVE_SSE42
 	if (flags & BASE64_FORCE_SSE42) {
-		codec->enc = base64_stream_encode_sse42;
-		codec->dec = base64_stream_decode_sse42;
+		codec->enc = trk_base64_stream_encode_sse42;
+		codec->dec = trk_base64_stream_decode_sse42;
 		return true;
 	}
 #endif
 #if HAVE_AVX
 	if (flags & BASE64_FORCE_AVX) {
-		codec->enc = base64_stream_encode_avx;
-		codec->dec = base64_stream_decode_avx;
+		codec->enc = trk_base64_stream_encode_avx;
+		codec->dec = trk_base64_stream_decode_avx;
 		return true;
 	}
 #endif
@@ -170,11 +170,11 @@ codec_choose_arm (struct codec *codec)
 	// has cpuid, so just stick to the compile-time configuration:
 
 	#if defined(__aarch64__) && HAVE_NEON64
-	codec->enc = base64_stream_encode_neon64;
-	codec->dec = base64_stream_decode_neon64;
+	codec->enc = trk_base64_stream_encode_neon64;
+	codec->dec = trk_base64_stream_decode_neon64;
 	#else
-	codec->enc = base64_stream_encode_neon32;
-	codec->dec = base64_stream_decode_neon32;
+	codec->enc = trk_base64_stream_encode_neon32;
+	codec->dec = trk_base64_stream_decode_neon32;
 	#endif
 
 	return true;
@@ -222,8 +222,8 @@ codec_choose_x86 (struct codec *codec)
 				if (max_level >= 7) {
 					__cpuid_count(7, 0, eax, ebx, ecx, edx);
 					if (ebx & bit_AVX2) {
-						codec->enc = base64_stream_encode_avx2;
-						codec->dec = base64_stream_decode_avx2;
+						codec->enc = trk_base64_stream_encode_avx2;
+						codec->dec = trk_base64_stream_decode_avx2;
 						return true;
 					}
 				}
@@ -231,8 +231,8 @@ codec_choose_x86 (struct codec *codec)
 				#if HAVE_AVX
 				__cpuid_count(1, 0, eax, ebx, ecx, edx);
 				if (ecx & bit_AVX) {
-					codec->enc = base64_stream_encode_avx;
-					codec->dec = base64_stream_decode_avx;
+					codec->enc = trk_base64_stream_encode_avx;
+					codec->dec = trk_base64_stream_decode_avx;
 					return true;
 				}
 				#endif
@@ -246,8 +246,8 @@ codec_choose_x86 (struct codec *codec)
 	if (max_level >= 1) {
 		__cpuid(1, eax, ebx, ecx, edx);
 		if (ecx & bit_SSE42) {
-			codec->enc = base64_stream_encode_sse42;
-			codec->dec = base64_stream_decode_sse42;
+			codec->enc = trk_base64_stream_encode_sse42;
+			codec->dec = trk_base64_stream_decode_sse42;
 			return true;
 		}
 	}
@@ -258,8 +258,8 @@ codec_choose_x86 (struct codec *codec)
 	if (max_level >= 1) {
 		__cpuid(1, eax, ebx, ecx, edx);
 		if (ecx & bit_SSE41) {
-			codec->enc = base64_stream_encode_sse41;
-			codec->dec = base64_stream_decode_sse41;
+			codec->enc = trk_base64_stream_encode_sse41;
+			codec->dec = trk_base64_stream_decode_sse41;
 			return true;
 		}
 	}
@@ -270,8 +270,8 @@ codec_choose_x86 (struct codec *codec)
 	if (max_level >= 1) {
 		__cpuid(1, eax, ebx, ecx, edx);
 		if (ecx & bit_SSSE3) {
-			codec->enc = base64_stream_encode_ssse3;
-			codec->dec = base64_stream_decode_ssse3;
+			codec->enc = trk_base64_stream_encode_ssse3;
+			codec->dec = trk_base64_stream_decode_ssse3;
 			return true;
 		}
 	}
@@ -299,6 +299,6 @@ codec_choose (struct codec *codec, int flags)
 	if (codec_choose_x86(codec)) {
 		return;
 	}
-	codec->enc = base64_stream_encode_plain;
-	codec->dec = base64_stream_decode_plain;
+	codec->enc = trk_base64_stream_encode_plain;
+	codec->dec = trk_base64_stream_decode_plain;
 }

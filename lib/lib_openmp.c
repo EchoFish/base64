@@ -1,15 +1,15 @@
 // This code makes some assumptions on the implementation of 
-// base64_stream_encode_init(), base64_stream_encode() and base64_stream_decode().
+// trk_base64_stream_encode_init(), trk_base64_stream_encode() and trk_base64_stream_decode().
 // Basically these assumptions boil down to that when breaking the src into
 // parts, out parts can be written without side effects.
 // This is met when:
-// 1) base64_stream_encode() and base64_stream_decode() don't use globals;
+// 1) trk_base64_stream_encode() and trk_base64_stream_decode() don't use globals;
 // 2) the shared variables src and out are not read or written outside of the
-//    bounds of their parts, i.e.  when base64_stream_encode() reads a multiple
+//    bounds of their parts, i.e.  when trk_base64_stream_encode() reads a multiple
 //    of 3 bytes, it must write no more then a multiple of 4 bytes, not even
 //    temporarily;
-// 3) the state flag can be discarded after base64_stream_encode() and
-//    base64_stream_decode() on the parts.
+// 3) the state flag can be discarded after trk_base64_stream_encode() and
+//    trk_base64_stream_decode() on the parts.
 
 static inline void
 base64_encode_openmp
@@ -43,7 +43,7 @@ base64_encode_openmp
 			last_len = srclen - num_threads * len;
 
 			// Init the stream reader:
-			base64_stream_encode_init(&state, flags);
+			trk_base64_stream_encode_init(&state, flags);
 			initial_state = state;
 		}
 
@@ -53,7 +53,7 @@ base64_encode_openmp
 		for (i = 0; i < num_threads; i++)
 		{
 			// Feed each part of the string to the stream reader:
-			base64_stream_encode(&state, src + i * len, len, out + i * len * 4 / 3, &s);
+			trk_base64_stream_encode(&state, src + i * len, len, out + i * len * 4 / 3, &s);
 			sum += s;
 		}
 	}
@@ -63,10 +63,10 @@ base64_encode_openmp
 	state = initial_state;
 
 	// Encode the remaining bytes:
-	base64_stream_encode(&state, src + num_threads * len, last_len, out + num_threads * len * 4 / 3, &s);
+	trk_base64_stream_encode(&state, src + num_threads * len, last_len, out + num_threads * len * 4 / 3, &s);
 
 	// Finalize the stream by writing trailer if any:
-	base64_stream_encode_final(&state, out + num_threads * len * 4 / 3 + s, &t);
+	trk_base64_stream_encode_final(&state, out + num_threads * len * 4 / 3 + s, &t);
 
 	// Final output length is stream length plus tail:
 	sum += s + t;
@@ -103,7 +103,7 @@ base64_decode_openmp
 			last_len = srclen - num_threads * len;
 
 			// Init the stream reader:
-			base64_stream_decode_init(&state, flags);
+			trk_base64_stream_decode_init(&state, flags);
 
 			initial_state = state;
 		}
@@ -116,7 +116,7 @@ base64_decode_openmp
 			int this_result;
 
 			// Feed each part of the string to the stream reader:
-			this_result = base64_stream_decode(&state, src + i * len, len, out + i * len * 3 / 4, &s);
+			this_result = trk_base64_stream_decode(&state, src + i * len, len, out + i * len * 3 / 4, &s);
 			sum += s;
 			result += this_result;
 		}
@@ -137,7 +137,7 @@ base64_decode_openmp
 	// So far so good, now decode whatever remains in the buffer. Reuse the
 	// initial state, since we are at a 4-byte boundary:
 	state = initial_state;
-	result = base64_stream_decode(&state, src + num_threads * len, last_len, out + num_threads * len * 3 / 4, &s);
+	result = trk_base64_stream_decode(&state, src + num_threads * len, last_len, out + num_threads * len * 3 / 4, &s);
 	sum += s;
 	*outlen = sum;
 

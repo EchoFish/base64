@@ -156,17 +156,17 @@ test_streaming (int flags)
 		size_t partlen = 0;
 		size_t enclen  = 0;
 
-		base64_stream_encode_init(&state, flags);
+		trk_base64_stream_encode_init(&state, flags);
 		memset(enc, 0, 400);
 		for (;;) {
-			base64_stream_encode(&state, &chr[inpos], (inpos + bs > 256) ? 256 - inpos : bs, &enc[enclen], &partlen);
+			trk_base64_stream_encode(&state, &chr[inpos], (inpos + bs > 256) ? 256 - inpos : bs, &enc[enclen], &partlen);
 			enclen += partlen;
 			if (inpos + bs > 256) {
 				break;
 			}
 			inpos += bs;
 		}
-		base64_stream_encode_final(&state, &enc[enclen], &partlen);
+		trk_base64_stream_encode_final(&state, &enc[enclen], &partlen);
 		enclen += partlen;
 
 		if (enclen != reflen) {
@@ -193,9 +193,9 @@ test_streaming (int flags)
 		size_t partlen = 0;
 		size_t enclen  = 0;
 
-		base64_stream_decode_init(&state, flags);
+		trk_base64_stream_decode_init(&state, flags);
 		memset(enc, 0, 400);
-		while (base64_stream_decode(&state, &ref[inpos], (inpos + bs > reflen) ? reflen - inpos : bs, &enc[enclen], &partlen)) {
+		while (trk_base64_stream_decode(&state, &ref[inpos], (inpos + bs > reflen) ? reflen - inpos : bs, &enc[enclen], &partlen)) {
 			enclen += partlen;
 			inpos += bs;
 		}

@@ -21,13 +21,13 @@
 // Function signature for encoding functions:
 #define BASE64_ENC_FUNCTION(arch)		\
 	void					\
-	base64_stream_encode_ ## arch		\
+	trk_base64_stream_encode_ ## arch		\
 	BASE64_ENC_PARAMS
 
 // Function signature for decoding functions:
 #define BASE64_DEC_FUNCTION(arch)		\
 	int					\
-	base64_stream_decode_ ## arch		\
+	trk_base64_stream_decode_ ## arch		\
 	BASE64_DEC_PARAMS
 
 // Cast away unused variable, silence compiler:
