@@ -14,7 +14,7 @@ assert_enc (int flags, const char *src, const char *dst)
 	size_t srclen = strlen(src);
 	size_t dstlen = strlen(dst);
 
-	base64_encode(src, srclen, out, &outlen, flags);
+	trk_base64_encode(src, srclen, out, &outlen, flags);
 
 	if (outlen != dstlen) {
 		printf("FAIL: encoding of '%s': length expected %lu, got %lu\n", src,
@@ -37,7 +37,7 @@ assert_dec (int flags, const char *src, const char *dst)
 	size_t srclen = strlen(src);
 	size_t dstlen = strlen(dst);
 
-	if (!base64_decode(src, srclen, out, &outlen, flags)) {
+	if (!trk_base64_decode(src, srclen, out, &outlen, flags)) {
 		printf("FAIL: decoding of '%s': decoding error\n", src);
 		return true;
 	}
@@ -65,10 +65,10 @@ assert_roundtrip (int flags, const char *src)
 	size_t srclen = strlen(src);
 
 	// Encode the input into global buffer:
-	base64_encode(src, srclen, out, &outlen, flags);
+	trk_base64_encode(src, srclen, out, &outlen, flags);
 
 	// Decode the global buffer into local temp buffer:
-	if (!base64_decode(out, outlen, tmp, &tmplen, flags)) {
+	if (!trk_base64_decode(out, outlen, tmp, &tmplen, flags)) {
 		printf("FAIL: decoding of '%s': decoding error\n", out);
 		return true;
 	}
@@ -108,9 +108,9 @@ test_char_table (int flags)
 
 		size_t chrlen = 256 - i;
 
-		base64_encode(&chr[i], chrlen, enc, &enclen, BASE64_FORCE_PLAIN);
+		trk_base64_encode(&chr[i], chrlen, enc, &enclen, BASE64_FORCE_PLAIN);
 
-		if (!base64_decode(enc, enclen, dec, &declen, flags)) {
+		if (!trk_base64_decode(enc, enclen, dec, &declen, flags)) {
 			printf("FAIL: decoding @ %d: decoding error\n", i);
 			fail = true;
 			continue;
@@ -147,7 +147,7 @@ test_streaming (int flags)
 		chr[i] = (unsigned char)i;
 
 	// Create reference base64 encoding:
-	base64_encode(chr, 256, ref, &reflen, BASE64_FORCE_PLAIN);
+	trk_base64_encode(chr, 256, ref, &reflen, BASE64_FORCE_PLAIN);
 
 	// Encode the table with various block sizes and compare to reference:
 	for (size_t bs = 1; bs < 255; bs++)
@@ -239,11 +239,11 @@ test_invalid_dec_input (int flags)
 		chr[i] = (unsigned char)i;
 
 	// Create reference base64 encoding:
-	base64_encode(chr, 256, enc, &enclen, BASE64_FORCE_PLAIN);
+	trk_base64_encode(chr, 256, enc, &enclen, BASE64_FORCE_PLAIN);
 
 	// Test invalid strings returns error.
 	for (size_t i = 0U; i < sizeof(invalid_strings) / sizeof(invalid_strings[0]); ++i) {
-		if (base64_decode(invalid_strings[i], strlen(invalid_strings[i]), dec, &declen, flags)) {
+		if (trk_base64_decode(invalid_strings[i], strlen(invalid_strings[i]), dec, &declen, flags)) {
 			printf("FAIL: decoding invalid input \"%s\": no decoding error\n", invalid_strings[i]);
 			fail = true;
 		}
@@ -256,7 +256,7 @@ test_invalid_dec_input (int flags)
 
 			enc[i] = invalid_set[c];
 
-			if (base64_decode(enc, enclen, dec, &declen, flags)) {
+			if (trk_base64_decode(enc, enclen, dec, &declen, flags)) {
 				printf("FAIL: decoding invalid input @ %d: no decoding error\n", (int)i);
 				fail = true;
 				enc[i] = backup;
@@ -275,7 +275,7 @@ test_invalid_dec_input (int flags)
 			enc[i+0] = invalid_set[c];
 			enc[i+2] = invalid_set[c];
 
-			if (base64_decode(enc, enclen, dec, &declen, flags)) {
+			if (trk_base64_decode(enc, enclen, dec, &declen, flags)) {
 				printf("FAIL: decoding invalid input @ %d: no decoding error\n", (int)i);
 				fail = true;
 				enc[i+0] = backup;

@@ -24,5 +24,5 @@ codec_supported (int flags)
 	char b[10];
 	size_t outlen;
 
-	return (base64_decode(a, strlen(a), b, &outlen, flags) != -1);
+	return (trk_base64_decode(a, strlen(a), b, &outlen, flags) != -1);
 }

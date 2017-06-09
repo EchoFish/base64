@@ -123,7 +123,7 @@ codec_bench_enc (struct buffers *b, const struct bufsize *bs, const char *name, 
 		// Timing loop, use batches to increase timer resolution:
 		base64_gettime(&start);
 		for (int j = bs->batch; j; j--)
-			base64_encode(b->reg, b->regsz, b->enc, &b->encsz, flags);
+			trk_base64_encode(b->reg, b->regsz, b->enc, &b->encsz, flags);
 		base64_gettime(&end);
 
 		// Calculate average time of batch:
@@ -152,7 +152,7 @@ codec_bench_dec (struct buffers *b, const struct bufsize *bs, const char *name, 
 		// Timing loop, use batches to increase timer resolution:
 		base64_gettime(&start);
 		for (int j = bs->batch; j; j--)
-			base64_decode(b->enc, b->encsz, b->reg, &b->regsz, flags);
+			trk_base64_decode(b->enc, b->encsz, b->reg, &b->regsz, flags);
 		base64_gettime(&end);
 
 		// Calculate average time of batch:
